@@ -1,0 +1,6 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory '/home/cesar/Documents/UFF/Projetos/FIU/INVUNSTD/v3/software/fpr'
+ifort -g -O3 main.f90 -c
+ifort main.o -o fpr -g -llapack -lblas
+make: Leaving directory '/home/cesar/Documents/UFF/Projetos/FIU/INVUNSTD/v3/software/fpr'
+ 
