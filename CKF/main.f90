@@ -12,10 +12,11 @@ program CKF
     include 'mkl_lapack.fi'
     integer::i,j,k,t
     integer::info,nthreads
+    integer::posi,posj
     integer,parameter::lwork=100*nxy
     integer,dimension(nxy)::ipiv
     real(8),dimension(lwork)::work
-    real(8)::T2Th,Th2T
+    real(8)::T2Th,Th2T,aux0,aux1,aux2,aux3
     real(8)::tt,x,y
     real(8)::r11,r12,r21,r22,rx,ry,rt,t1,t2
     real(8)::ktr,rhocr,a,b,c,kt,rhoc,time,cmh,cmh2,T0,sT,sq,sy
@@ -53,6 +54,9 @@ program CKF
 
     dcx=drx
     dcy=dry
+
+    posi=10
+    posj=10
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! General Material Properties !
@@ -188,13 +192,19 @@ program CKF
     call MKL_SET_NUM_THREADS(nthreads)
     ti=DSECND()
     
-    open(unit=10,file="vTest.dat",status="replace")
+    open(unit=10,file="vT0.dat",status="replace")
     open(unit=11,file="vqest.dat",status="replace")
     open(unit=12,file="vy_raw.dat",status="old")
     open(unit=13,file="vTc.dat",status="replace")
+
+    open(unit=20,file="ttime0.dat",status="replace")
+    open(unit=21,file="ttimec.dat",status="replace")
+    open(unit=22,file="qtime.dat",status="replace")
+
     do t=1,nt
         tt=real(t,8)*dt
         write(unit=*,fmt=*)tt
+
     !!!!!!!!!!!!!
     ! Read Data !
     !!!!!!!!!!!!!
@@ -260,6 +270,24 @@ program CKF
     ! Output !
     !!!!!!!!!!
         
+        k=posj+(posi-1)*ny
+        aux0=Th2T(vy(k))
+        aux1=Th2T(vxp(k)+cmh*vxp(nxy+k))
+        aux2=Th2T(vxp(k)+cmh*vxp(nxy+k)-2.576d0*dsqrt(mPp(k,k)))
+        aux3=Th2T(vxp(k)+cmh*vxp(nxy+k)+2.576d0*dsqrt(mPp(k,k)))
+        write(unit=20,fmt='(6(es16.5,1x))')time,aux0,aux1,aux2,aux3,aux0-aux1
+        
+        aux1=Th2T(vxp(k)+cmh2*vxp(nxy+k))
+        aux2=Th2T(vxp(k)+cmh2*vxp(nxy+k)-2.576d0*dsqrt(mPp(k,k)))
+        aux3=Th2T(vxp(k)+cmh2*vxp(nxy+k)+2.576d0*dsqrt(mPp(k,k)))
+        write(unit=21,fmt='(4(es16.5,1x))')time,aux1,aux2,aux3
+
+        k=k+nxy
+        aux1=vx(k)
+        aux2=vx(k)-2.576d0*dsqrt(mPp(k,k))
+        aux3=vx(k)+2.576d0*dsqrt(mPp(k,k))
+        write(unit=22,fmt='(4(es16.5,1x))')time,aux1,aux2,aux3
+
         write(unit=10,fmt=99)'vT','"Temperature [K]"',nx,ny,t,tt
         write(unit=11,fmt=99)'vq','"Heat Flux [W/m2]"',nx,ny,t,tt
         write(unit=13,fmt=99)'vT','"Temperature [K]"',nx,ny,t,tt
@@ -278,6 +306,9 @@ program CKF
     close(unit=11)
     close(unit=12)
     close(unit=13)
+    close(unit=20)
+    close(unit=21)
+    close(unit=22)
 
     tf=DSECND()
     open(unit=20,file="time.dat",status="replace")

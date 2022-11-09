@@ -1,6 +1,6 @@
 make --dry-run --always-make --keep-going --print-directory
-make: Entering directory '/home/cesar/Documents/UFF/Projetos/FIU/INVUNSTD/v3/software/CKF'
-ifort -g -heap-arrays -O3 main.f90 -c
-ifort main.o -o CKF -g -heap-arrays -llapack -lblas
-make: Leaving directory '/home/cesar/Documents/UFF/Projetos/FIU/INVUNSTD/v3/software/CKF'
+make: Entering directory '/home/cesar/Documents/UFF/codes/INVUNSTD/CKF'
+ifort -g -heap-arrays -O3 -qmkl main.f90 -c
+ifort main.o -o CKF -g -heap-arrays -qmkl
+make: Leaving directory '/home/cesar/Documents/UFF/codes/INVUNSTD/CKF'
  

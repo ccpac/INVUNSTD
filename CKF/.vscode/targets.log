@@ -6,7 +6,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Thu Oct 13 14:32:26 2022
+# Make data base, printed on Fri Nov  4 19:43:19 2022
 
 # Variables
 
@@ -30,6 +30,8 @@ CMAKE_PREFIX_PATH = /home/cesar/intel/oneapi/tbb/2021.5.0/env/..:/home/cesar/int
 WM_ARCH_OPTION = 64
 # makefile (from 'makefile', line 2)
 FFLAGS = -g -heap-arrays
+# environment
+GJS_DEBUG_OUTPUT = stderr
 # environment
 WM_CXX = g++
 # environment
@@ -73,11 +75,11 @@ WM_LABEL_OPTION = Int32
 # environment
 LINK_FNL_SHARED_HPC = -z muldefs -L/opt/RogueWave/imsl/fnl-2021.0.0/rdh800in212x64/lib -L/home/cesar/intel/oneapi/mkl/2022.0.1/lib/intel64 -shared-intel -limsl -limslsuperlu -limslhpc_l -limsllapack_vendor -limslblas_vendor -limslmpistub -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core -lmkl_lapack95_lp64 -liomp5 -Xlinker -rpath -Xlinker /opt/RogueWave/imsl/fnl-2021.0.0/rdh800in212x64/lib -Xlinker -rpath -Xlinker /home/cesar/intel/oneapi/mkl/2022.0.1/lib/intel64
 # environment
-PWD = /home/cesar/Documents/UFF/Projetos/FIU/INVUNSTD/v3/software/CKF
+PWD = /home/cesar/Documents/UFF/codes/INVUNSTD/CKF
 # automatic
 %D = $(patsubst %/,%,$(dir $%))
 # environment
-PS1 = \[\e]0;\u@\h: \w\a\]${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\W\[\033[00m\]\$
+PS1 = (base) \[\033[31m\]$(__git_ps1 "(%s)")\[\033[01;34m\]\[\033[00m\]\[\e]0;\u@\h: \w\a\]${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\W\[\033[00m\]\$
 # environment
 XDG_DATA_DIRS = /usr/share/ubuntu:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop
 # automatic
@@ -85,11 +87,13 @@ XDG_DATA_DIRS = /usr/share/ubuntu:/usr/local/share/:/usr/share/:/var/lib/snapd/d
 # automatic
 %F = $(notdir $%)
 # environment
-VSCODE_CODE_CACHE_PATH = /home/cesar/.config/Code/CachedData/64bbfbf67ada9953918d72e1df2f4d8e537d340e
+CONDA_PROMPT_MODIFIER = (base) 
+# environment
+VSCODE_CODE_CACHE_PATH = /home/cesar/.config/Code/CachedData/d045a5eda657f4d7b676dedbfa7aab8207f8a075
 # environment
 LANG = C
 # environment
-XAUTHORITY = /run/user/1000/.mutter-Xwaylandauth.YQ26T1
+XAUTHORITY = /run/user/1000/.mutter-Xwaylandauth.M6AYU1
 # default
 .LOADED := 
 # default
@@ -104,10 +108,8 @@ MAKEFLAGS = pqrR
 PKG_CONFIG_PATH = /home/cesar/intel/oneapi/vtune/2022.0.0/include/pkgconfig/lib64:/home/cesar/intel/oneapi/tbb/2021.5.0/env/../lib/pkgconfig:/home/cesar/intel/oneapi/mpi/2021.5.0/lib/pkgconfig:/home/cesar/intel/oneapi/mkl/2022.0.1/lib/pkgconfig:/home/cesar/intel/oneapi/ippcp/2021.5.0/lib/pkgconfig:/home/cesar/intel/oneapi/inspector/2022.0.0/include/pkgconfig/lib64:/home/cesar/intel/oneapi/dpl/2021.6.0/lib/pkgconfig:/home/cesar/intel/oneapi/dnnl/2022.0.1/cpu_dpcpp_gpu_dpcpp/../lib/pkgconfig:/home/cesar/intel/oneapi/compiler/2022.0.1/lib/pkgconfig:/home/cesar/intel/oneapi/ccl/2021.5.0/lib/pkgconfig:/home/cesar/intel/oneapi/advisor/2022.0.0/include/pkgconfig/lib64:
 # environment
 DPL_ROOT = /home/cesar/intel/oneapi/dpl/2021.6.0
-# environment
-DBUS_STARTER_ADDRESS = unix:path=/run/user/1000/bus,guid=f7a27c795afa88b1841ced316348347f
 # makefile
-CURDIR := /home/cesar/Documents/UFF/Projetos/FIU/INVUNSTD/v3/software/CKF
+CURDIR := /home/cesar/Documents/UFF/codes/INVUNSTD/CKF
 # environment
 APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
 # environment
@@ -141,13 +143,15 @@ MPI_ARCH_PATH =
 # makefile (from 'makefile', line 1)
 MAKEFILE_LIST := makefile
 # environment
+CONDA_SHLVL = 1
+# environment
 LINK_MPIS_HPC = -z muldefs -L/opt/RogueWave/imsl/fnl-2021.0.0/rdh800in212x64/lib -L/home/cesar/intel/oneapi/mkl/2022.0.1/lib/intel64 -Bstatic -Wl,--start-group -limsl -limslsuperlu -limslhpc_s -limsllapack_vendor -limslblas_vendor -limsls_err -Wl,--end-group -Wl,--start-group -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core -lmkl_scalapack_lp64 -lmkl_blacs_intelmpi_lp64 -Wl,--end-group -Bdynamic -Xlinker -rpath -Xlinker /home/cesar/intel/oneapi/mkl/2022.0.1/lib/intel64
 # automatic
 @F = $(notdir $@)
 # environment
 WM_COMPILER_TYPE = system
 # environment
-VSCODE_PID = 11063
+VSCODE_PID = 49796
 # environment
 FNL_DIR = /opt/RogueWave/imsl/fnl-2021.0.0
 # environment
@@ -159,11 +163,13 @@ WM_LABEL_SIZE = 32
 # environment
 DPCT_BUNDLE_ROOT = /home/cesar/intel/oneapi/dpcpp-ct/2022.0.0
 # environment
+CONDA_PYTHON_EXE = /home/cesar/anaconda3/bin/python
+# environment
 FOAM_MPI = openmpi-system
 # environment
 WM_THIRD_PARTY_DIR = /opt/ThirdParty-9
 # environment
-SESSION_MANAGER = local/thinkpad:@/tmp/.ICE-unix/2309,unix/thinkpad:/tmp/.ICE-unix/2309
+SESSION_MANAGER = local/thinkpad:@/tmp/.ICE-unix/2288,unix/thinkpad:/tmp/.ICE-unix/2288
 # automatic
 *F = $(notdir $*)
 # environment
@@ -175,9 +181,7 @@ CHROME_DESKTOP = code-url-handler.desktop
 # environment
 WM_MPLIB = SYSTEMOPENMPI
 # environment
-DBUS_SESSION_BUS_ADDRESS = unix:path=/run/user/1000/bus,guid=f7a27c795afa88b1841ced316348347f
-# environment
-INSIDE_NAUTILUS_PYTHON = 
+DBUS_SESSION_BUS_ADDRESS = unix:path=/run/user/1000/bus
 # environment
 FNL_EXAMPLES = /opt/RogueWave/imsl/fnl-2021.0.0/rdh800in212x64/examples
 # automatic
@@ -208,6 +212,8 @@ SHELL = /bin/sh
 IPPCP_TARGET_ARCH = intel64
 # environment
 CLASSPATH = /home/cesar/intel/oneapi/mpi/2021.5.0//lib/mpi.jar
+# environment
+CONDA_PREFIX = /home/cesar/anaconda3
 # default
 MAKECMDGOALS := all
 # environment
@@ -217,11 +223,15 @@ LD_LIBRARY_PATH = /opt/ThirdParty-9/platforms/linux64Gcc/gperftools-svn/lib:/opt
 # environment
 VT_ROOT = /home/cesar/intel/oneapi/itac/2021.5.0
 # environment
+GJS_DEBUG_TOPICS = JS ERROR;JS LOG
+# environment
 SHLVL = 0
 # environment
 MPIF90 = mpif90
 # environment
 LINK_MPI_HPC = -z muldefs -L/opt/RogueWave/imsl/fnl-2021.0.0/rdh800in212x64/lib -L/home/cesar/intel/oneapi/mkl/2022.0.1/lib/intel64 -Bstatic -Wl,--start-group -limsl -limslsuperlu -limslhpc_s -limsllapack_vendor -limslblas_vendor -limslp_err -Wl,--end-group -Wl,--start-group -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core -lmkl_scalapack_lp64 -lmkl_blacs_intelmpi_lp64 -Wl,--end-group -Bdynamic -Xlinker -rpath -Xlinker /home/cesar/intel/oneapi/mkl/2022.0.1/lib/intel64
+# environment
+GCC_COLORS = error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01
 # environment
 MAKELEVEL := 0
 # environment
@@ -235,7 +245,7 @@ MAKE = $(MAKE_COMMAND)
 # makefile (from 'makefile', line 1)
 FC = ifort
 # environment
-PATH = /home/cesar/.local/bin:/opt/ThirdParty-9/platforms/linux64Gcc/gperftools-svn/bin:/opt/paraviewopenfoam56/bin:/opt/ThirdParty-9/platforms/linux64Gcc/cmake-*/bin:/home/cesar/OpenFOAM/cesar-9/platforms/linux64GccDPInt32Opt/bin:/opt/site/9/platforms/linux64GccDPInt32Opt/bin:/opt/openfoam9/platforms/linux64GccDPInt32Opt/bin:/opt/openfoam9/bin:/opt/openfoam9/wmake:/home/cesar/intel/oneapi/vtune/2022.0.0/bin64:/home/cesar/intel/oneapi/mpi/2021.5.0//libfabric/bin:/home/cesar/intel/oneapi/mpi/2021.5.0//bin:/home/cesar/intel/oneapi/mkl/2022.0.1/bin/intel64:/home/cesar/intel/oneapi/itac/2021.5.0/bin:/home/cesar/intel/oneapi/inspector/2022.0.0/bin64:/home/cesar/intel/oneapi/dpcpp-ct/2022.0.0/bin:/home/cesar/intel/oneapi/dev-utilities/2021.5.1/bin:/home/cesar/intel/oneapi/debugger/2021.5.0/gdb/intel64/bin:/home/cesar/intel/oneapi/compiler/2022.0.1/linux/lib/oclfpga/bin:/home/cesar/intel/oneapi/compiler/2022.0.1/linux/bin/intel64:/home/cesar/intel/oneapi/compiler/2022.0.1/linux/bin:/home/cesar/intel/oneapi/clck/2021.5.0/bin/intel64:/home/cesar/intel/oneapi/advisor/2022.0.0/bin64:/home/cesar/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+PATH = /home/cesar/.local/bin:/home/cesar/anaconda3/bin:/home/cesar/anaconda3/condabin:/opt/ThirdParty-9/platforms/linux64Gcc/gperftools-svn/bin:/opt/paraviewopenfoam56/bin:/opt/ThirdParty-9/platforms/linux64Gcc/cmake-*/bin:/home/cesar/OpenFOAM/cesar-9/platforms/linux64GccDPInt32Opt/bin:/opt/site/9/platforms/linux64GccDPInt32Opt/bin:/opt/openfoam9/platforms/linux64GccDPInt32Opt/bin:/opt/openfoam9/bin:/opt/openfoam9/wmake:/home/cesar/intel/oneapi/vtune/2022.0.0/bin64:/home/cesar/intel/oneapi/mpi/2021.5.0/libfabric/bin:/home/cesar/intel/oneapi/mpi/2021.5.0/bin:/home/cesar/intel/oneapi/mkl/2022.0.1/bin/intel64:/home/cesar/intel/oneapi/itac/2021.5.0/bin:/home/cesar/intel/oneapi/inspector/2022.0.0/bin64:/home/cesar/intel/oneapi/dpcpp-ct/2022.0.0/bin:/home/cesar/intel/oneapi/dev-utilities/2021.5.1/bin:/home/cesar/intel/oneapi/debugger/2021.5.0/gdb/intel64/bin:/home/cesar/intel/oneapi/compiler/2022.0.1/linux/lib/oclfpga/bin:/home/cesar/intel/oneapi/compiler/2022.0.1/linux/bin/intel64:/home/cesar/intel/oneapi/compiler/2022.0.1/linux/bin:/home/cesar/intel/oneapi/clck/2021.5.0/bin/intel64:/home/cesar/intel/oneapi/advisor/2022.0.0/bin64:/home/cesar/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 # environment
 MPIRUN = mpiexec
 # default
@@ -258,6 +268,7 @@ LINK_FNL_STATIC = -z muldefs -L/opt/RogueWave/imsl/fnl-2021.0.0/rdh800in212x64/l
 OCL_ICD_FILENAMES = libintelocl_emu.so:libalteracl.so:/home/cesar/intel/oneapi/compiler/2022.0.1/linux/lib/x64/libintelocl.so
 # environment
 FOAM_INST_DIR = /opt
+ 
 # environment
 LC_TIME = pt_BR.UTF-8
 # environment
@@ -271,7 +282,7 @@ LINK_FNL_STATIC_HPC = -z muldefs -L/opt/RogueWave/imsl/fnl-2021.0.0/rdh800in212x
 # environment
 ParaView_VERSION = 5.6.3
 # environment
-INVOCATION_ID = 7479806f67b0472eaf55ca34834fa6d1
+INVOCATION_ID = 45f4f2472ac644c3ae12b31b52d89055
 # environment
 FOAM_TUTORIALS = /opt/openfoam9/tutorials
 # environment
@@ -284,13 +295,12 @@ USERNAME = cesar
 LINK_FNL_IMSL = -L/opt/RogueWave/imsl/fnl-2021.0.0/rdh800in212x64/lib -Bdynamic -limsl -limslsuperlu -limslscalar -limslblas_imsl -limsllapack_imsl -limslmpistub -Xlinker -rpath -Xlinker /opt/RogueWave/imsl/fnl-2021.0.0/rdh800in212x64/lib
 # environment
 WM_CFLAGS = -m64 -fPIC
- 
 # environment
 LINK_F90_STATIC = -z muldefs -L/opt/RogueWave/imsl/fnl-2021.0.0/rdh800in212x64/lib -L/home/cesar/intel/oneapi/mkl/2022.0.1/lib/intel64 -Bstatic -Wl,--start-group -limsl -limslsuperlu -limslhpc_l -limsllapack_vendor -limslblas_vendor -limsls_err -limslmpistub -Wl,--end-group -Wl,--start-group -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core -Wl,--end-group -liomp5 -Bdynamic -Xlinker -rpath -Xlinker /home/cesar/intel/oneapi/mkl/2022.0.1/lib/intel64
 # environment
 GNOME_SETUP_DISPLAY = :1
 # makefile (from 'makefile', line 4)
-FLIBS = -llapack -lblas
+FLIBS = -qmkl
 # environment
 LC_TELEPHONE = pt_BR.UTF-8
 # environment
@@ -328,6 +338,8 @@ PV_PLUGIN_PATH = /opt/openfoam9/platforms/linux64GccDPInt32Opt/lib/paraview-5.6
 # 'override' directive
 GNUMAKEFLAGS := 
 # environment
+CONDA_DEFAULT_ENV = base
+# environment
 FOAM_SIGFPE = 
 # environment
 LINK_MPI_IMSL = -L/opt/RogueWave/imsl/fnl-2021.0.0/rdh800in212x64/lib -Bstatic -Wl,--start-group -limsl -limslsuperlu -limslscalar -limsllapack_imsl -limslblas_imsl -limslp_err -Wl,--end-group -Bdynamic -Xlinker -rpath -Xlinker /home/cesar/intel/oneapi/mkl/2022.0.1/lib/intel64
@@ -346,7 +358,7 @@ VT_MPI = impi4
 # makefile
 .DEFAULT_GOAL := all
 # environment
-SYSTEMD_EXEC_PID = 2309
+SYSTEMD_EXEC_PID = 2320
 # environment
 DISPLAY = :0
 # environment
@@ -364,9 +376,7 @@ LINK_MPI = -z muldefs -L/opt/RogueWave/imsl/fnl-2021.0.0/rdh800in212x64/lib -L/h
 # environment
 FOAM_EXT_LIBBIN = /opt/ThirdParty-9/platforms/linux64GccDPInt32/lib
 # environment
-MANAGERPID = 2163
-# environment
-DBUS_STARTER_BUS_TYPE = session
+MANAGERPID = 2104
 # environment
 WM_LDFLAGS = -m64
 # environment
@@ -376,7 +386,7 @@ LINK_FNL_SHARED_IMSL = -L/opt/RogueWave/imsl/fnl-2021.0.0/rdh800in212x64/lib -Bd
 # environment
 LC_MEASUREMENT = pt_BR.UTF-8
 # environment
-GIO_LAUNCHED_DESKTOP_FILE_PID = 11063
+GIO_LAUNCHED_DESKTOP_FILE_PID = 49796
 # environment
 PYTHONPATH = /home/cesar/intel/oneapi/advisor/2022.0.0/pythonapi
 # environment
@@ -400,6 +410,8 @@ LINK_F90 = -z muldefs -L/opt/RogueWave/imsl/fnl-2021.0.0/rdh800in212x64/lib -L/h
 # environment
 FNL_COMPILER_VERSION = Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.2.0 Build 20210228_000000
 # environment
+_CE_M = 
+# environment
 LC_CTYPE = pt_BR.UTF-8
 # environment
 LINK_F90_HPC = -z muldefs -L/opt/RogueWave/imsl/fnl-2021.0.0/rdh800in212x64/lib -L/home/cesar/intel/oneapi/mkl/2022.0.1/lib/intel64 -shared-intel -limsl -limslsuperlu -limslhpc_l -limsllapack_vendor -limslblas_vendor -limslmpistub -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core -lmkl_lapack95_lp64 -liomp5 -Xlinker -rpath -Xlinker /opt/RogueWave/imsl/fnl-2021.0.0/rdh800in212x64/lib -Xlinker -rpath -Xlinker /home/cesar/intel/oneapi/mkl/2022.0.1/lib/intel64
@@ -408,7 +420,7 @@ CPLUS_INCLUDE_PATH = /home/cesar/intel/oneapi/clck/2021.5.0/include
 # environment
 MPI_BUFFER_SIZE = 20000000
 # environment
-JOURNAL_STREAM = 8:34876
+JOURNAL_STREAM = 8:34524
 # environment
 WM_CC = gcc
 # environment
@@ -440,7 +452,7 @@ ParaView_DIR = /opt/paraviewopenfoam56
 # environment
 TBBROOT = /home/cesar/intel/oneapi/tbb/2021.5.0/env/..
 # environment
-VSCODE_IPC_HOOK = /run/user/1000/vscode-a0e10100-1.72.0-main.sock
+VSCODE_IPC_HOOK = /run/user/1000/vscode-a0e10100-1.72.2-main.sock
 # environment
 ELECTRON_RUN_AS_NODE = 1
 # environment
@@ -500,13 +512,17 @@ XDG_MENU_PREFIX = gnome-
 # environment
 WM_COMPILER_LIB_ARCH = 64
 # environment
+CONDA_EXE = /home/cesar/anaconda3/bin/conda
+# environment
+_CE_CONDA = 
+# environment
 GDMSESSION = ubuntu
 # environment
 LC_IDENTIFICATION = pt_BR.UTF-8
 # makefile (from 'makefile', line 3)
 FOPT = -O3
 # variable set hash-table stats:
-# Load=247/1024=24%, Rehash=0, Collisions=47/289=16%
+# Load=255/1024=25%, Rehash=0, Collisions=47/297=16%
 
 # Pattern-specific Variable Values
 
@@ -514,9 +530,9 @@ FOPT = -O3
 
 # Directories
 
-# . (device 64768, inode 18350081): 15 files, no impossibilities.
+# . (device 64768, inode 18874992): 16 files, no impossibilities.
 
-# 15 files, no impossibilities in 1 directories.
+# 16 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -527,80 +543,4 @@ FOPT = -O3
 # Not a target:
 main.f90:
 #  Implicit rule search has been done.
-#  Last modified 2022-10-07 18:09:44.335242094
-#  File has been updated.
-#  Successfully updated.
-
-# Not a target:
-.DEFAULT:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-
-all: main.o
-#  Command line target.
-#  Implicit rule search has not been done.
-#  Implicit/static pattern stem: ''
-#  File does not exist.
-#  File has been updated.
-#  Needs to be updated (-q is set).
-# automatic
-# @ := all
-# automatic
-# * := 
-# automatic
-# < := main.o
-# automatic
-# + := main.o
-# automatic
- 
-# % := 
-# automatic
-# ^ := main.o
-# automatic
-# ? := main.o
-# automatic
-# | := 
-# variable set hash-table stats:
-# Load=8/32=25%, Rehash=0, Collisions=2/16=12%
-#  recipe to execute (from 'makefile', line 12):
-	$(FC) $^ -o $(EXEC) $(FFLAGS) $(FLIBS)
-
-main.o: main.f90
-#  Implicit rule search has not been done.
-#  Last modified 2022-10-07 18:09:48.439304716
-#  File has been updated.
-#  Successfully updated.
-#  recipe to execute (from 'makefile', line 14):
-	$(FC) $(FFLAGS) $(FOPT) $^ -c
-
-# Not a target:
-makefile:
-#  Implicit rule search has been done.
-#  Last modified 2022-08-22 13:31:27.17109
-#  File has been updated.
-#  Successfully updated.
-
-# Not a target:
-.SUFFIXES:
-#  Implicit rule search has not been done.
-#  Modification time never checked.
-#  File has not been updated.
-
-# files hash-table stats:
-# Load=6/1024=1%, Rehash=0, Collisions=0/21=0%
-# VPATH Search Paths
-
-# No 'vpath' search paths.
-
-# No general ('VPATH' variable) search path.
-
-# strcache buffers: 1 (0) / strings = 20 / storage = 180 B / avg = 9 B
-# current buf: size = 8162 B / used = 180 B / count = 20 / avg = 9 B
-
-# strcache performance: lookups = 31 / hit rate = 35%
-# hash-table stats:
-# Load=20/8192=0%, Rehash=0, Collisions=0/31=0%
-# Finished Make data base on Thu Oct 13 14:32:26 2022
-
  
