@@ -14,6 +14,7 @@ program mPmK
   integer LDALL,LDR
   parameter(N=2*tri*trj,M=tri*trj)
   parameter(LDALL=N,LDR=N)
+  real(8)::tb,te
   integer,parameter::lwork=100*N
   integer,dimension(M)::ipiv
   real(8),dimension(lwork)::work
@@ -40,6 +41,10 @@ program mPmK
     real(8),dimension(LDT,2*N)::T
     real(8),dimension(LDU,2*N)::U
     logical,dimension(2*N)::bwork
+  !!!!!!!!!!!!!!!!!!!!!!!!
+  !Measure computing time!
+  !!!!!!!!!!!!!!!!!!!!!!!!
+    call cpu_time(tb)
   !!!!!!!!!!!!!!!!
   !Setting values!
   !!!!!!!!!!!!!!!!
@@ -151,9 +156,14 @@ program mPmK
   !Data Output!
   !!!!!!!!!!!!!
     write(unit=*,fmt=*)"Writing output files..."
-    open(unit=10,file='steady_mPmK.dat',status='unknown',form='unformatted')
+    open(unit=10,file='steady_mPmK.dat',status='replace',form='unformatted',access='stream')
+    !open(unit=10,file='steady_mPmK.dat',status='replace',form='binary')
     write(unit=10)mF1,mP,mK
     close(unit=10)
+    call cpu_time(te)
+    open(unit=11,file='time.dat',status='replace')
+    write(unit=11,fmt=*)te-tb
+    close(unit=11)
 end program mPmK
 
 !!!!!!!!!!!!!!!!

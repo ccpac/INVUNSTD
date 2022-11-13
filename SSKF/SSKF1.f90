@@ -1,7 +1,7 @@
 module global
   integer tri,trj,tck
   real(8) dt,a,b,c,drx,dry,dcx,dcy
-  parameter(dt=0.02,tri=24,trj=24,a=0.12d0,b=0.12d0,c=0.003d0)
+  parameter(dt=0.02d0,tri=24,trj=24,a=0.12d0,b=0.12d0,c=0.003d0)
   parameter(drx=a/dble(tri),dry=b/dble(trj))
   parameter(dcx=drx,dcy=dry)
 end module
@@ -56,9 +56,9 @@ program SSKF
   !Steady-State !
   !Kalman Filter!
   !!!!!!!!!!!!!!!
-    open(unit=15,file='steady_mPmK.dat',status='unknown',form='unformatted')
-    read(15)mF1,mP,mK
-    close(15)
+    open(unit=15,file='steady_mPmK.dat',status='unknown',form='unformatted',access='stream')
+    read(unit=15)mF1,mP,mK
+    close(unit=15)
     maux2=matmul(mK,mH)
     maux2=-maux2
     do i=1,2*tri*trj
@@ -69,6 +69,7 @@ program SSKF
     call cpu_time(tbeg)
     do t=1,nt
       tt=real(t,8)*dt
+      write(unit=*,fmt=*)tt
       !!!!!!!!!!!!!!!!!!!!!!
       !Reading Measurements!
       !!!!!!!!!!!!!!!!!!!!!!
@@ -128,7 +129,7 @@ program SSKF
   close(unit=20)
   close(unit=21)
   call cpu_time(tend)
-  open(unit=12,file="tempo.dat")
+  open(unit=12,file="time.dat",status='replace')
   write(unit=12,fmt=*)tend-tbeg
   close(unit=12)
   stop

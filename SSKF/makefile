@@ -1,5 +1,5 @@
 FC = ifort
-FFLAGS = #-Wall -ffree-line-length-none -fmax-stack-var-size=32768
+FFLAGS = -g #-Wall -ffree-line-length-none -fmax-stack-var-size=32768
 FOPT = -O3
 
 all: SSKF1.o SSKF1
