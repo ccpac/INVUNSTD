@@ -3,6 +3,11 @@
 *.mod
 *.o
 fpr
+!fpr/
 CKF
+!CKF/
 SSKF
+!SSKF/
 mPmK
+!mPmK/
+.vscode
