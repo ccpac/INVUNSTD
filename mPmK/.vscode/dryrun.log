@@ -1,6 +1,0 @@
-make --dry-run --always-make --keep-going --print-directory
-make: Entering directory '/home/cesar/Documents/UFF/Projetos/FIU/INVUNSTD/software/mPmK'
-ifort  -O3 mPmK1.f90 -c
-ifort  -O3 mPmK1.o -o mPmK1 -lslicot -llapack -lblas 
-make: Leaving directory '/home/cesar/Documents/UFF/Projetos/FIU/INVUNSTD/software/mPmK'
- 

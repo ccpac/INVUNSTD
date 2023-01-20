@@ -1,6 +1,0 @@
-make --dry-run --always-make --keep-going --print-directory
-make: Entering directory '/home/cesar/Documents/UFF/Projetos/FIU/INVUNSTD/v3/software/SSKF'
-ifort  -O3 SSKF1.f90 -c
-ifort SSKF1.o -o SSKF1   -O3
-make: Leaving directory '/home/cesar/Documents/UFF/Projetos/FIU/INVUNSTD/v3/software/SSKF'
- 

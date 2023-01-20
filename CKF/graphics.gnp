@@ -1,8 +1,0 @@
-set terminal pngcairo enhanced
-
-set output "kirch.png"
-plot "kirch.dat" u 1:2 w l title "T2Th",\
-     "kirch.dat" u 3:2 w l title "Th2T"
-unset output
-
-unset terminal
