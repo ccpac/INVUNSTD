@@ -10,7 +10,7 @@ program CKF
     use global
     implicit none
     include 'mkl_lapack.fi'
-    integer::i,j,k,t
+    integer::i,j,k,t,pi,pj,pk
     integer::info,nthreads
     integer,parameter::lwork=100*nxy
     integer,dimension(nxy)::ipiv
@@ -18,9 +18,9 @@ program CKF
     real(8)::T2Th,Th2T
     real(8)::tt,x,y
     real(8)::r11,r12,r21,r22,rx,ry,rt,t1,t2
-    real(8)::ktr,rhocr,a,b,c,kt,rhoc,time,cmh,cmh2,T0,sT,sq,sy
+    real(8)::ktr,rhocr,a,b,c,kt,rhoc,time,cmh,cmh2,T0,sT,sq,sy,auxt,auxq
     real(8)::tf,ti
-    real(8),dimension(nxy)::vy,vyp
+    real(8),dimension(nxy)::vye,vy,vyp,vyk
     real(8),dimension(2*nxy)::vxp,vxm
     real(8),dimension(nxy,nxy)::mR,mInv
     real(8),dimension(nxy,2*nxy)::mH
@@ -53,6 +53,14 @@ program CKF
 
     dcx=drx
     dcy=dry
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+! Position for Profiling Results !
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+    pi=9
+    pj=9
+    pk=pj+(pi-1)*ny
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! General Material Properties !
@@ -162,10 +170,10 @@ program CKF
         mR(i,i)=sy**2.d0
     enddo
 
-!!!!!!!!!!!!!!!!!!!!!!!!!
-! Initializing Remaining!
-! Vectors and Matrices  !
-!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!
+! Initializing Remaining !
+!  Vectors and Matrices  !
+!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     mK=0.d0
     mPp=mQ
@@ -174,6 +182,10 @@ program CKF
     mInv=0.d0
     vxp=0.d0
     vxm=0.d0
+    vye=0.d0
+    vy=0.d0
+    vyk=0.d0
+    vyp=0.d0
     do i=1,nxy
         vxp(i)=T2Th(T0)
         vxp(nxy+i)=0.d0
@@ -184,14 +196,16 @@ program CKF
 ! Classical Kalman Filter !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-    nthreads=2
+    nthreads=8
     call MKL_SET_NUM_THREADS(nthreads)
     ti=DSECND()
     
     open(unit=10,file="vTest.dat",status="replace")
     open(unit=11,file="vqest.dat",status="replace")
     open(unit=12,file="vy_raw.dat",status="old")
-    open(unit=13,file="vTc.dat",status="replace")
+    open(unit=13,file="vTest_c.dat",status="replace")
+    open(unit=14,file="vR.dat",status="replace")
+    open(unit=15,file="profiles.dat",status="replace")
     do t=1,nt
         tt=real(t,8)*dt
         write(unit=*,fmt=*)tt
@@ -199,14 +213,14 @@ program CKF
     ! Read Data !
     !!!!!!!!!!!!!
 
-        read(unit=12,fmt=*)vy
+        read(unit=12,fmt=*)vye,vy
 
     !!!!!!!!!!!!!!!!!!!!!!!
     ! Kirchhoff Transform !
     !!!!!!!!!!!!!!!!!!!!!!!
 
         do i=1,nxy
-            vy(i)=T2Th(vy(i))
+            vyk(i)=T2Th(vy(i))
         enddo
 
     !!!!!!!!!!
@@ -244,7 +258,7 @@ program CKF
 
         call dgemv('N',nxy,2*nxy,1.d0,mH,nxy,vxm,1,0.d0,vyp,1)
         vxp=vxm
-        call dgemv('N',2*nxy,nxy,1.d0,mK,2*nxy,vy-vyp,1,1.d0,vxp,1)
+        call dgemv('N',2*nxy,nxy,1.d0,mK,2*nxy,vyk-vyp,1,1.d0,vxp,1)
 
     !!!!!!!!!!!!!!!
     ! P = (I-KH)P !
@@ -260,25 +274,37 @@ program CKF
     ! Output !
     !!!!!!!!!!
         
-        write(unit=10,fmt=99)'vT','"Temperature [K]"',nx,ny,t,tt
-        write(unit=11,fmt=99)'vq','"Heat Flux [W/m2]"',nx,ny,t,tt
-        write(unit=13,fmt=99)'vT','"Temperature [K]"',nx,ny,t,tt
+        write(unit=10,fmt=99)'vT','"T [K]", "y [K]"',nx,ny,t,tt
+        write(unit=11,fmt=99)'vq','"q [W/m2]"',nx,ny,t,tt
+        write(unit=13,fmt=99)'vT','"T [K]"',nx,ny,t,tt
+        write(unit=14,fmt=99)'vR','"Y-T [K]"',nx,ny,t,tt
         do i=1,nx
             x=(real(i,8)-0.5d0)*drx
             do j=1,ny
                 y=(real(j,8)-0.5d0)*dry
                 k=j+(i-1)*ny
-                write(unit=10,fmt=*)x,y,Th2T(vxp(k)+cmh*vxp(nxy+k))
+                write(unit=10,fmt=*)x,y,Th2T(vxp(k)+cmh*vxp(nxy+k)),vy(k)
                 write(unit=11,fmt=*)x,y,vxp(nxy+k)
-                write(unit=13,fmt=*)x,y,Th2T(vxp(k)+cmh2*vxp(nxy+k))
+                write(unit=13,fmt=*)x,y,Th2T(vxp(k)+cmh*vxp(nxy+k))
+                write(unit=14,fmt=*)x,y,vy(k)-Th2T(vxp(k)+cmh*vxp(nxy+k))
             enddo
         enddo
+        auxt=2.576d0*dsqrt(mPp(pk,pk))
+        auxq=2.576d0*dsqrt(mPp(nxy+pk,nxy+pk))
+        write(unit=15,fmt='(10(es15.6, 1x))')tt,vye(pk),vy(pk),Th2T(vxp(pk)+cmh*vxp(nxy+pk)),&
+            Th2T(vxp(pk)+cmh*vxp(nxy+pk)-auxt),&
+            Th2T(vxp(pk)+cmh*vxp(nxy+pk)+auxt),&
+            vy(pk)-Th2T(vxp(pk)+cmh*vxp(nxy+pk)),&
+            vxp(nxy+pk),&
+            vxp(nxy+pk)-auxq,&
+            vxp(nxy+pk)+auxq
     enddo
     close(unit=10)
     close(unit=11)
     close(unit=12)
     close(unit=13)
-
+    close(unit=14)
+    close(unit=15)
     tf=DSECND()
     open(unit=20,file="time.dat",status="replace")
     write(unit=20,fmt=*)nthreads,tf-ti

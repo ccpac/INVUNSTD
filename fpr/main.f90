@@ -13,7 +13,7 @@ program fpr
     integer,dimension(4)::iseed
     real(8)::tt,x,y,r
     real(8)::time,T0,sy
-    real(8),dimension(nxy)::vy,vq
+    real(8),dimension(nxy)::vy,vye,vq
     real(8),allocatable,dimension(:,:,:)::hT
 
 !!!!!!!!!!!!!!!!
@@ -87,13 +87,14 @@ program fpr
                 k=ny*(i-1)+j
                 y=(real(j,8)-0.5d0)*dry
                 call dlarnv(3,iseed,1,r)
-                vy(k)=hT(i,j,1)+r*sy
+                vye(k)=hT(i,j,1)
+                vy(k)=vye(k)+r*sy
                 write(unit=10,fmt=*)x,y,vq(k)
                 write(unit=12,fmt=*)x,y,vy(k)
                 write(unit=13,fmt=*)x,y,hT(i,j,nz)
             enddo
         enddo
-        write(unit=11,fmt=*)vy
+        write(unit=11,fmt=*)vye,vy
         write(unit=14,fmt='(4(es14.6,1x))')tt,hT(posi,posj,1),vy(pos),vq(pos)
     enddo
     close(unit=10)
@@ -112,30 +113,30 @@ program fpr
         'ZONE, i=',i3,', j=',i3,', f=point, STRANDID=',i3,',SOLUTIONTIME=',es14.6)
 end program fpr
 
-!subroutine vqf(vq,it)
-!    use global
-!    implicit none
-!    integer::i,j,k,it,i0,i1,j0,j1
-!    real(8)::tt,x,y
-!    real(8),dimension(nx*ny)::vq
-!    tt=real(it,8)*dt
-!    i0=8
-!    i1=10
-!    j0=8
-!    j1=10
-!    do i=1,nx
-!        x=(real(i,8)-0.5d0)*drx
-!        do j=1,ny
-!            k=ny*(i-1)+j
-!            y=(real(j,8)-0.5d0)*dry
-!            if((i.ge.i0).and.(i.le.i1).and.(j.ge.j0).and.(j.le.j1))then
-!                vq(k)=1.d5
-!            else
-!                vq(k)=0.d0
-!            endif
-!        enddo
-!    enddo
-!end subroutine
+subroutine vqf(vq,it)
+    use global
+    implicit none
+    integer::i,j,k,it,i0,i1,j0,j1
+    real(8)::tt,x,y
+    real(8),dimension(nx*ny)::vq
+    tt=real(it,8)*dt
+    i0=8
+    i1=10
+    j0=8
+    j1=10
+    do i=1,nx
+        x=(real(i,8)-0.5d0)*drx
+        do j=1,ny
+            k=ny*(i-1)+j
+            y=(real(j,8)-0.5d0)*dry
+            if((i.ge.i0).and.(i.le.i1).and.(j.ge.j0).and.(j.le.j1))then
+                vq(k)=1.d5
+            else
+                vq(k)=0.d0
+            endif
+        enddo
+    enddo
+end subroutine
 
 !subroutine vqf(vq,it)
 !    use global
@@ -195,40 +196,40 @@ end program fpr
 !    enddo
 !end subroutine
 
-subroutine vqf(vq,it)
-    use global
-    implicit none
-    integer::i,j,k,it,i0,j0
-    real(8)::tt,x,y,x0,y0,q0,q1,q2,m
-    real(8),dimension(nx*ny)::vq
-    tt=real(it,8)*dt
-    i0=1
-    x0=(real(i0,8)-0.5d0)*drx
-    j0=1
-    y0=(real(j0,8)-0.5d0)*dry
-    q0=1.d6
-    q1=1.d5
-    q2=4.d5
-    do i=1,nx
-        x=(real(i,8)-0.5d0)*drx
-        do j=1,ny
-            k=ny*(i-1)+j
-            y=(real(j,8)-0.5d0)*dry
-            if((x.le.0.06))then
-                m=(q1-q0)/(0.06d0)
-                vq(k)=q0+m*x
-            endif
-            if((x.ge.0.06d0).and.(x.le.0.09))then
-                vq(k)=q1
-            endif
-            if((x.ge.0.09))then
-                m=(q2-q1)/(0.12d0-0.09d0)
-                vq(k)=q1+m*(x-0.09d0)
-            endif
-            vq(k)=vq(k)*dexp(-4.d0*(y-b/2.d0)**2.d0/b**2.d0)
-        enddo
-    enddo
-end subroutine
+!subroutine vqf(vq,it)
+!    use global
+!    implicit none
+!    integer::i,j,k,it,i0,j0
+!    real(8)::tt,x,y,x0,y0,q0,q1,q2,m
+!    real(8),dimension(nx*ny)::vq
+!    tt=real(it,8)*dt
+!    i0=1
+!    x0=(real(i0,8)-0.5d0)*drx
+!    j0=1
+!    y0=(real(j0,8)-0.5d0)*dry
+!    q0=1.d6
+!    q1=1.d5
+!    q2=4.d5
+!    do i=1,nx
+!        x=(real(i,8)-0.5d0)*drx
+!        do j=1,ny
+!            k=ny*(i-1)+j
+!            y=(real(j,8)-0.5d0)*dry
+!            if((x.le.0.06))then
+!                m=(q1-q0)/(0.06d0)
+!                vq(k)=q0+m*x
+!            endif
+!            if((x.ge.0.06d0).and.(x.le.0.09))then
+!                vq(k)=q1
+!            endif
+!            if((x.ge.0.09))then
+!                m=(q2-q1)/(0.12d0-0.09d0)
+!                vq(k)=q1+m*(x-0.09d0)
+!            endif
+!            vq(k)=vq(k)*dexp(-4.d0*(y-b/2.d0)**2.d0/b**2.d0)
+!        enddo
+!    enddo
+!end subroutine
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !Solução do Modelo Completo!
