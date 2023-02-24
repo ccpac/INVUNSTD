@@ -94,7 +94,7 @@ program fpr
                 write(unit=13,fmt=*)x,y,hT(i,j,nz)
             enddo
         enddo
-        write(unit=11,fmt=*)vye,vy
+        write(unit=11,fmt=*)vye,vy,vq
         write(unit=14,fmt='(4(es14.6,1x))')tt,hT(posi,posj,1),vy(pos),vq(pos)
     enddo
     close(unit=10)
