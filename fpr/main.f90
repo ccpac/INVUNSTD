@@ -30,7 +30,7 @@ program fpr
 ! Measurement Noise !
 !!!!!!!!!!!!!!!!!!!!!
 
-    sy=1.d-2
+    sy=1.d-1
 
 !!!!!!!!!!!!!!!!!
 ! Random Number !

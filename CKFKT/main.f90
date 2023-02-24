@@ -247,7 +247,7 @@ program CKF
         mPHT=0.d0
         call dgemm('N','T',2*nxy,nxy,2*nxy,1.d0,mPm,2*nxy,mH,nxy,0.d0,mPHT,2*nxy)
         mInv=mR
-        call dgemm('N','N',nxy,2*nxy,nxy,1.d0,mH,nxy,mPHT,2*nxy,1.d0,mInv,nxy)
+        call dgemm('N','N',nxy,nxy,2*nxy,1.d0,mH,nxy,mPHT,2*nxy,1.d0,mInv,nxy)
         call dgetrf(nxy,nxy,mInv,nxy,ipiv,info)
         call dgetri(nxy,mInv,nxy,ipiv,work,lwork,info)
         mK=0.d0
