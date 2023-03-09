@@ -130,7 +130,7 @@ subroutine vqf(vq,it)
             k=ny*(i-1)+j
             y=(real(j,8)-0.5d0)*dry
             if((i.ge.i0).and.(i.le.i1).and.(j.ge.j0).and.(j.le.j1))then
-                vq(k)=1.d5
+                vq(k)=1.d7
             else
                 vq(k)=0.d0
             endif

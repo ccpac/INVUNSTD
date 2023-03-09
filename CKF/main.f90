@@ -146,8 +146,8 @@ program CKF
 ! Noise Covariance !
 !!!!!!!!!!!!!!!!!!!!
 
-    sT=1.d-1
-    sq=1.d4
+    sT=1.d0
+    sq=5.d4
     mQ=0.d0
     mR=0.d0
     do i=1,nxy

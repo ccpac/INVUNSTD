@@ -15,11 +15,11 @@ program CKF
     integer,parameter::lwork=100*nxy
     integer,dimension(nxy)::ipiv
     real(8),dimension(lwork)::work
-    real(8)::T2Th,Th2T
     real(8)::tt,x,y
     real(8)::r11,r12,r21,r22,rx,ry,rt,t1,t2
     real(8)::ktr,rhocr,a,b,c,kt,rhoc,time,cmh,cmh2,T0,sT,sq,sy,auxt,auxq
     real(8)::tf,ti
+    real(8)::T2Th,Th2T
     real(8),dimension(nxy)::vye,vy,vyp,vyk,vqe
     real(8),dimension(2*nxy)::vxp,vxm
     real(8),dimension(nxy,nxy)::mR,mInv
@@ -41,7 +41,7 @@ program CKF
 ! Measurement Noise !
 !!!!!!!!!!!!!!!!!!!!!
 
-    sy=1.d-2
+    sy=1.d-1
 
 !!!!!!!!!!!!!
 ! Grid size !
@@ -78,19 +78,6 @@ program CKF
     ktr=kt(Tref)
     kref=ktr
     rhocr=rhoc(Tref)
-
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-! Testing Kirchhoff Transform !
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-    open(unit=10,file="kirch.dat",status="replace")
-    t1=1.d0
-    do i=1,100
-        t1=t1+25.d0
-        t2=T2Th(t1)
-        write(unit=10,fmt='(3(es14.6,1x))')t1,t2,Th2T(t2)
-    enddo
-    close(unit=10)
 
 !!!!!!!!!!!!!!!!!!!!
 ! Evolution Matrix !
@@ -160,8 +147,8 @@ program CKF
 ! Noise Covariance !
 !!!!!!!!!!!!!!!!!!!!
 
-    sT=1.d-1
-    sq=1.d2
+    sT=1.d0
+    sq=5.d4
     mQ=0.d0
     mR=0.d0
     do i=1,nxy
@@ -197,7 +184,7 @@ program CKF
 ! Classical Kalman Filter !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-    nthreads=8
+    nthreads=4
     call MKL_SET_NUM_THREADS(nthreads)
     ti=DSECND()
     
@@ -214,8 +201,6 @@ program CKF
     ! Read Data !
     !!!!!!!!!!!!!
 
-        read(unit=12,fmt=*)vye,vy,vqe
-
     !!!!!!!!!!!!!!!!!!!!!!!
     ! Kirchhoff Transform !
     !!!!!!!!!!!!!!!!!!!!!!!
@@ -223,6 +208,8 @@ program CKF
         do i=1,nxy
             vyk(i)=T2Th(vy(i))
         enddo
+
+        read(unit=12,fmt=*)vye,vy,vqe
 
     !!!!!!!!!!
     ! x = Fx !
@@ -274,7 +261,7 @@ program CKF
     !!!!!!!!!!
     ! Output !
     !!!!!!!!!!
-        write(*,*)vqe(pk),pk
+
         write(unit=10,fmt=99)'vT','"T [K]", "y [K]"',nx,ny,t,tt
         write(unit=11,fmt=99)'vq','"q [W/m2]"',nx,ny,t,tt
         write(unit=13,fmt=99)'vT','"T [K]"',nx,ny,t,tt
@@ -286,13 +273,14 @@ program CKF
                 k=j+(i-1)*ny
                 write(unit=10,fmt=*)x,y,Th2T(vxp(k)+cmh*vxp(nxy+k)),vy(k)
                 write(unit=11,fmt=*)x,y,vxp(nxy+k)
-                write(unit=13,fmt=*)x,y,Th2T(vxp(k)+cmh*vxp(nxy+k))
+                write(unit=13,fmt=*)x,y,Th2T(vxp(k)+cmh2*vxp(nxy+k))
                 write(unit=14,fmt=*)x,y,vy(k)-Th2T(vxp(k)+cmh*vxp(nxy+k))
             enddo
         enddo
         auxt=2.576d0*dsqrt(mPp(pk,pk))
         auxq=2.576d0*dsqrt(mPp(nxy+pk,nxy+pk))
-        write(unit=15,fmt='(11(es15.6, 1x))')tt,vye(pk),vy(pk),Th2T(vxp(pk)+cmh*vxp(nxy+pk)),&
+        write(unit=15,fmt='(11(es15.6, 1x))')tt,vye(pk),vy(pk),&
+            Th2T(vxp(pk)+cmh*vxp(nxy+pk)),&
             Th2T(vxp(pk)+cmh*vxp(nxy+pk)-auxt),&
             Th2T(vxp(pk)+cmh*vxp(nxy+pk)+auxt),&
             vy(pk)-Th2T(vxp(pk)+cmh*vxp(nxy+pk)),&
