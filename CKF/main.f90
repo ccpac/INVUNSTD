@@ -299,31 +299,6 @@ program CKF
         'ZONE, i=',i3,', j=',i3,', f=point, STRANDID=',i3,',SOLUTIONTIME=',es14.6)
 end program CKF
 
-subroutine vqf(vq,it)
-    use global
-    implicit none
-    integer::i,j,k,it,i0,i1,j0,j1
-    real(8)::tt,x,y
-    real(8),dimension(nx*ny)::vq
-    tt=real(it,8)*dt
-    i0=8
-    i1=10
-    j0=8
-    j1=10
-    do i=1,nx
-        x=(real(i,8)-0.5d0)*drx
-        do j=1,ny
-            k=i+(j-1)*nx
-            y=(real(j,8)-0.5d0)*dry
-            if((i.ge.i0).and.(i.le.i1).and.(j.ge.j0).and.(j.le.j1))then
-                vq(k)=1.d5
-            else
-                vq(k)=0.d0
-            endif
-        enddo
-    enddo
-end subroutine
-
 !!!!!!!!!!!!!!!!
 !Thermophysical!
 !  Properties  !

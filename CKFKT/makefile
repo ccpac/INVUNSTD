@@ -2,7 +2,7 @@ FC = ifort
 FFLAGS = -g -heap-arrays
 FOPT = -O3
 FLIBS = -qmkl#-llapack -lblas
-EXEC = CKF
+EXEC = CKFKT
 
 SRC = main.f90
 OBJ = main.o
