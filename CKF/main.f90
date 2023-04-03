@@ -1,5 +1,5 @@
 module global
-    integer,parameter::nx=24,ny=24,nt=100,nxy=nx*ny
+    integer,parameter::nx=24,ny=24,nt=250,nxy=nx*ny
     real(8)::drx,dry,dt
     real(8)::dcx,dcy,dcz
     real(8)::p1,p2,p3,Tref,kref
@@ -19,6 +19,7 @@ program CKF
     real(8)::r11,r12,r21,r22,rx,ry,rt,t1,t2
     real(8)::ktr,rhocr,a,b,c,kt,rhoc,time,cmh,cmh2,T0,sT,sq,sy,auxt,auxq
     real(8)::tf,ti
+    real(8)::tempb,tempm,tempt,ktt,qt
     real(8),dimension(nxy)::vye,vy,vyp,vyk,vqe
     real(8),dimension(2*nxy)::vxp,vxm
     real(8),dimension(nxy,nxy)::mR,mInv
@@ -33,14 +34,14 @@ program CKF
     a=0.12d0
     b=0.12d0
     c=0.003d0
-    time=2.d0
+    time=5.d0
     T0=300.d0
 
 !!!!!!!!!!!!!!!!!!!!!
 ! Measurement Noise !
 !!!!!!!!!!!!!!!!!!!!!
 
-    sy=1.d-1
+    sy=1.d0
 
 !!!!!!!!!!!!!
 ! Grid size !
@@ -52,6 +53,7 @@ program CKF
 
     dcx=drx
     dcy=dry
+    dcz=c/3.d0
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! Position for Profiling Results !
@@ -73,7 +75,7 @@ program CKF
 ! Constant Thermal Properties !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-    Tref=600.d0
+    Tref=900.d0
     ktr=kt(Tref)
     kref=ktr
     rhocr=rhoc(Tref)
@@ -200,7 +202,7 @@ program CKF
     ! Read Data !
     !!!!!!!!!!!!!
 
-        read(unit=12,fmt=*)vye,vy,vqe
+        read(unit=12,fmt=*)vye,vy,vqe      
 
     !!!!!!!!!!
     ! x = Fx !

@@ -1,5 +1,5 @@
 module global
-    integer,parameter::nx=24,ny=24,nt=100,nxy=nx*ny
+    integer,parameter::nx=24,ny=24,nt=250,nxy=nx*ny
     real(8)::drx,dry,dt
     real(8)::dcx,dcy,dcz
     real(8)::p1,p2,p3,Tref,kref
@@ -34,14 +34,14 @@ program CKFKT
     a=0.12d0
     b=0.12d0
     c=0.003d0
-    time=2.d0
+    time=5.d0
     T0=300.d0
 
 !!!!!!!!!!!!!!!!!!!!!
 ! Measurement Noise !
 !!!!!!!!!!!!!!!!!!!!!
 
-    sy=1.d-1
+    sy=1.d0
 
 !!!!!!!!!!!!!
 ! Grid size !
@@ -74,7 +74,7 @@ program CKFKT
 ! Constant Thermal Properties !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-    Tref=600.d0
+    Tref=900.d0
     ktr=kt(Tref)
     kref=ktr
     rhocr=rhoc(Tref)
@@ -147,8 +147,8 @@ program CKFKT
 ! Noise Covariance !
 !!!!!!!!!!!!!!!!!!!!
 
-    sT=2.5d0
-    sq=5.d5
+    sT=1.d0
+    sq=5.d4
     mQ=0.d0
     mR=0.d0
     do i=1,nxy

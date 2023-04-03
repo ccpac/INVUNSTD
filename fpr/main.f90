@@ -1,5 +1,5 @@
 module global
-    integer,parameter::nx=24,ny=24,nz=6,nt=100,nxy=nx*ny
+    integer,parameter::nx=24,ny=24,nz=6,nt=250,nxy=nx*ny
     real(8)::drx,dry,dt
     real(8)::dcx,dcy,dcz
     real(8)::a,b,c
@@ -23,14 +23,14 @@ program fpr
     a=0.12d0
     b=0.12d0
     c=0.003d0
-    time=2.d0
+    time=5.d0
     T0=300.d0
 
 !!!!!!!!!!!!!!!!!!!!!
 ! Measurement Noise !
 !!!!!!!!!!!!!!!!!!!!!
 
-    sy=1.d-1
+    sy=1.d0
 
 !!!!!!!!!!!!!!!!!
 ! Random Number !
@@ -130,7 +130,7 @@ subroutine vqf(vq,it)
             k=ny*(i-1)+j
             y=(real(j,8)-0.5d0)*dry
             if((i.ge.i0).and.(i.le.i1).and.(j.ge.j0).and.(j.le.j1))then
-                vq(k)=1.d7
+                vq(k)=5.d6
             else
                 vq(k)=0.d0
             endif
