@@ -11,21 +11,18 @@ program CKFKT
     implicit none
     include 'mkl_lapack.fi'
     integer::i,j,k,t,pi,pj,pk
-    integer::info,nthreads
-    integer,parameter::lwork=100*nxy
-    integer,dimension(nxy)::ipiv
-    real(8),dimension(lwork)::work
+    integer::nthreads
     real(8)::tt,x,y
     real(8)::r11,r12,r21,r22,rx,ry,rt,t1,t2
     real(8)::ktr,rhocr,a,b,c,kt,rhoc,time,cmh,cmh2,T0,sT,sq,sy,auxt,auxq
     real(8)::tf,ti
-    real(8)::T2Th,Th2T
-    real(8),dimension(nxy)::vye,vy,vyp,vyk,vqe
-    real(8),dimension(2*nxy)::vxp,vxm
-    real(8),dimension(nxy,nxy)::mR,mInv
+    real(8)::T2Th,Th2T,nis
+    real(8),dimension(2)::vvar
+    real(8),dimension(nxy)::vye,vy,vyk,vqe
+    real(8),dimension(2*nxy)::vxp
+    real(8),dimension(nxy,nxy)::mR
     real(8),dimension(nxy,2*nxy)::mH
-    real(8),dimension(2*nxy,nxy)::mK,mPHT
-    real(8),dimension(2*nxy,2*nxy)::mF1,mQ,mPp,mPm,maux
+    real(8),dimension(2*nxy,2*nxy)::mF1,mPp,mQ
 
 !!!!!!!!!!!!!!!!
 ! Problem Data !
@@ -156,23 +153,19 @@ program CKFKT
         mQ(nxy+i,nxy+i)=sq**2.d0
         mR(i,i)=sy**2.d0
     enddo
+    vvar(1)=sT**2.d0
+    vvar(2)=sq**2.d0
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!
 ! Initializing Remaining !
 !  Vectors and Matrices  !
 !!!!!!!!!!!!!!!!!!!!!!!!!!
 
-    mK=0.d0
     mPp=mQ
-    mPm=mQ
-    mPHT=0.d0
-    mInv=0.d0
     vxp=0.d0
-    vxm=0.d0
     vye=0.d0
     vy=0.d0
     vyk=0.d0
-    vyp=0.d0
     vqe=0.d0
     do i=1,nxy
         vxp(i)=T2Th(T0)
@@ -211,57 +204,16 @@ program CKFKT
             vyk(i)=T2Th(vy(i))
         enddo
 
-    !!!!!!!!!!
-    ! x = Fx !
-    !!!!!!!!!!
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ! Classical Kalman Filter !
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-        call dgemv('N',2*nxy,2*nxy,1.d0,mF1,2*nxy,vxp,1,0.d0,vxm,1)
-        vxp=vxm
-
-    !!!!!!!!!!!!!!!!!
-    ! P = FPF^T + Q !
-    !!!!!!!!!!!!!!!!!
-
-        mPm=mPp
-        call dgemm('N','N',2*nxy,2*nxy,2*nxy,1.d0,mF1,2*nxy,mPm,2*nxy,0.d0,mPp,2*nxy)
-        mPm=mQ
-        call dgemm('N','T',2*nxy,2*nxy,2*nxy,1.d0,mPp,2*nxy,mF1,2*nxy,1.d0,mPm,2*nxy)
-
-    !!!!!!!!!!!!!!!!!!!!!!!!!!
-    ! K = PH^T(HPH^T + R)^-1 !
-    !!!!!!!!!!!!!!!!!!!!!!!!!!
-
-        mPHT=0.d0
-        call dgemm('N','T',2*nxy,nxy,2*nxy,1.d0,mPm,2*nxy,mH,nxy,0.d0,mPHT,2*nxy)
-        mInv=mR
-        call dgemm('N','N',nxy,nxy,2*nxy,1.d0,mH,nxy,mPHT,2*nxy,1.d0,mInv,nxy)
-        call dgetrf(nxy,nxy,mInv,nxy,ipiv,info)
-        call dgetri(nxy,mInv,nxy,ipiv,work,lwork,info)
-        mK=0.d0
-        call dgemm('N','N',2*nxy,2*nxy,nxy,1.d0,mPHT,2*nxy,mInv,nxy,0.d0,mK,2*nxy)
-
-    !!!!!!!!!!!!!!!!!!!
-    ! x = x + K(y-Hx) !
-    !!!!!!!!!!!!!!!!!!!
-
-        call dgemv('N',nxy,2*nxy,1.d0,mH,nxy,vxm,1,0.d0,vyp,1)
-        vxp=vxm
-        call dgemv('N',2*nxy,nxy,1.d0,mK,2*nxy,vyk-vyp,1,1.d0,vxp,1)
-
-    !!!!!!!!!!!!!!!
-    ! P = (I-KH)P !
-    !!!!!!!!!!!!!!!
-        
-        call dgemm('N','N',2*nxy,2*nxy,nxy,1.d0,mK,2*nxy,mH,nxy,0.d0,maux,2*nxy)
-        do i=1,2*nxy
-            maux(i,i)=maux(i,i)-1.d0
-        enddo
-        call dgemm('N','N',2*nxy,2*nxy,2*nxy,1.d0,-maux,2*nxy,mPm,2*nxy,0.d0,mPp,2*nxy)
+        call CGO(vyk,vxp,mPp,mF1,mH,mR,vvar,2)
+        call CKF(vyk,vxp,mPp,mF1,mH,mR,vvar,nis)
 
     !!!!!!!!!!
     ! Output !
     !!!!!!!!!!
-
         write(unit=10,fmt=99)'vT','"T [K]", "y [K]"',nx,ny,t,tt
         write(unit=11,fmt=99)'vq','"q [W/m2]"',nx,ny,t,tt
         write(unit=13,fmt=99)'vT','"T [K]"',nx,ny,t,tt
@@ -354,3 +306,123 @@ real(8) function Th2T(th)
     enddo
     Th2T=T
 end function
+
+subroutine CKF(vy,vxp,mPp,mF1,mH,mR,vvar,nis)
+    use global
+    implicit none
+    integer::info,i
+    integer,parameter::lwork=100*nxy
+    integer,dimension(nxy)::ipiv
+    real(8)::nis,ddot
+    real(8),dimension(2)::vvar
+    real(8),dimension(lwork)::work
+    real(8),dimension(nxy)::vy,vyp
+    real(8),dimension(2*nxy)::vxp,vxm,veps
+    real(8),dimension(nxy,nxy)::mR,mInv
+    real(8),dimension(nxy,2*nxy)::mH
+    real(8),dimension(2*nxy,nxy)::mK,mPHT
+    real(8),dimension(2*nxy,2*nxy)::mF1,mQ,mPp,mPm,maux
+    !!!!!!!!!!!!!!!!!!!!!
+    !Covariance Matrices!
+    !!!!!!!!!!!!!!!!!!!!!
+    mQ=0.d0
+    do i=1,nxy
+        mQ(i,i)=vvar(1)
+        mQ(nxy+i,nxy+i)=vvar(2)
+    enddo
+    !!!!!!!!!!
+    ! x = Fx !
+    !!!!!!!!!!
+    call dgemv('N',2*nxy,2*nxy,1.d0,mF1,2*nxy,vxp,1,0.d0,vxm,1)
+    vxp=vxm
+    !!!!!!!!!!!!!!!!!
+    ! P = FPF^T + Q !
+    !!!!!!!!!!!!!!!!!
+    mPm=mPp
+    call dgemm('N','N',2*nxy,2*nxy,2*nxy,1.d0,mF1,2*nxy,mPm,2*nxy,0.d0,mPp,2*nxy)
+    mPm=mQ
+    call dgemm('N','T',2*nxy,2*nxy,2*nxy,1.d0,mPp,2*nxy,mF1,2*nxy,1.d0,mPm,2*nxy)
+    !!!!!!!!!!!!!!!!!!!!!!!!!!
+    ! K = PH^T(HPH^T + R)^-1 !
+    !!!!!!!!!!!!!!!!!!!!!!!!!!
+    mPHT=0.d0
+    call dgemm('N','T',2*nxy,nxy,2*nxy,1.d0,mPm,2*nxy,mH,nxy,0.d0,mPHT,2*nxy)
+    mInv=mR
+    call dgemm('N','N',nxy,nxy,2*nxy,1.d0,mH,nxy,mPHT,2*nxy,1.d0,mInv,nxy)
+    call dgetrf(nxy,nxy,mInv,nxy,ipiv,info)
+    call dgetri(nxy,mInv,nxy,ipiv,work,lwork,info)
+    mK=0.d0
+    call dgemm('N','N',2*nxy,2*nxy,nxy,1.d0,mPHT,2*nxy,mInv,nxy,0.d0,mK,2*nxy)
+    !!!!!!!!!!!!!!!!!!!
+    ! x = x + K(y-Hx) !
+    !!!!!!!!!!!!!!!!!!!
+    call dgemv('N',nxy,2*nxy,1.d0,mH,nxy,vxm,1,0.d0,vyp,1)
+    vxp=vxm
+    call dgemv('N',2*nxy,nxy,1.d0,mK,2*nxy,vy-vyp,1,1.d0,vxp,1)
+    !!!!!!!!!!!!!!!
+    ! P = (I-KH)P !
+    !!!!!!!!!!!!!!!
+    call dgemm('N','N',2*nxy,2*nxy,nxy,1.d0,mK,2*nxy,mH,nxy,0.d0,maux,2*nxy)
+    do i=1,2*nxy
+        maux(i,i)=maux(i,i)-1.d0
+    enddo
+    call dgemm('N','N',2*nxy,2*nxy,2*nxy,1.d0,-maux,2*nxy,mPm,2*nxy,0.d0,mPp,2*nxy)
+    !!!!!
+    !NIS!
+    !!!!!
+    veps=0.d0
+    call dgemv('N',nxy,nxy,1.d0,mInv,nxy,vy-vyp,1,1.d0,veps,1)
+    nis=ddot(nxy,vy-vyp,1,veps,1)
+end subroutine CKF
+
+subroutine CGO(vy,vx,mP,mF,mH,mR,vvar,n)
+    use global
+    implicit none
+    integer::n,i
+    real(8)::eps,nis,nis0,g,ngrad,tol,ddot
+    real(8),dimension(nxy)::vy
+    real(8),dimension(2*nxy)::vx
+    real(8),dimension(nxy,nxy)::mR
+    real(8),dimension(nxy,2*nxy)::mH
+    real(8),dimension(2*nxy,2*nxy)::mF,mP
+    real(8),dimension(n)::vvar,vvard,vgrad,vd,vgrad0
+    eps=1.d-5
+    g=0.d0
+    vd=0.d0
+    tol=1.d-3
+    !!!!!!!!!!!!!!!!!!!!!!
+    !Approximate Gradient!
+    !!!!!!!!!!!!!!!!!!!!!!
+    call CKF(vy,vx,mP,mF,mH,mR,vvar,nis0)
+    do i=1,n
+        vvard=vvar
+        vvard(i)=vvard(i)*(1.d0+eps)
+        call CKF(vy,vx,mP,mF,mH,mR,vvard,nis)
+        vgrad(i)=(nis-nis0)/(eps*vvard(i))
+    enddo
+    !!!!!!!!!!!!!!!!!!!!
+    !Conjugate Gradient!
+    !!!!!!!!!!!!!!!!!!!!
+    99 continue
+    vd=-vgrad+g*vd
+    vvar=vvar+vd
+
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    !Approximate Gradient Again!
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    call CKF(vy,vx,mP,mF,mH,mR,vvar,nis0)
+    do i=1,n
+        vvard=vvar
+        vvard(i)=vvard(i)*(1.d0+eps)
+        call CKF(vy,vx,mP,mF,mH,mR,vvard,nis)
+        vgrad(i)=(nis-nis0)/(eps*vvard(i))
+    enddo
+    ngrad=ddot(n,vgrad,1,vgrad,1)
+    write(*,*)ngrad,nis
+    write(*,*)vvar
+    if(ngrad.gt.tol)then
+        vgrad0=vgrad
+        g=ddot(n,vgrad,1,vgrad,1)/ddot(n,vgrad0,1,vgrad0,1)
+        goto 99
+    endif
+end subroutine CGO
