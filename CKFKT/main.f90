@@ -144,8 +144,8 @@ program CKFKT
 ! Noise Covariance !
 !!!!!!!!!!!!!!!!!!!!
 
-    sT=2.5d0
-    sq=5.d5
+    sT=1.d0
+    sq=1.d5
     mQ=0.d0
     mR=0.d0
     do i=1,nxy
@@ -208,8 +208,14 @@ program CKFKT
     ! Classical Kalman Filter !
     !!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-        call CGO(vyk,vxp,mPp,mF1,mH,mR,vvar,2)
-        call CKF(vyk,vxp,mPp,mF1,mH,mR,vvar,nis)
+        !call CGO(vyk,vxp,mPp,mF1,mH,mR,vvar,2)
+        call CKFeqs(vyk,vxp,mPp,mF1,mH,mR,vvar,nis)
+        !if(nis.gt.1.d1*nxy*sy**2.d0)then
+        !    vvar(2)=min(vvar(2)*dsqrt(10.d0),1.d0)
+        !else
+        !    vvar(2)=vvar(2)/dsqrt(10.d0)
+        !endif
+        write(unit=*,fmt='(A,1x,3(es15.6,1x))')"nis:",nis,nxy*sy**2.d0,vvar(2)
 
     !!!!!!!!!!
     ! Output !
@@ -307,7 +313,7 @@ real(8) function Th2T(th)
     Th2T=T
 end function
 
-subroutine CKF(vy,vxp,mPp,mF1,mH,mR,vvar,nis)
+subroutine CKFeqs(vy,vxp,mPp,mF1,mH,mR,vvar,nis)
     use global
     implicit none
     integer::info,i
@@ -371,9 +377,10 @@ subroutine CKF(vy,vxp,mPp,mF1,mH,mR,vvar,nis)
     !NIS!
     !!!!!
     veps=0.d0
-    call dgemv('N',nxy,nxy,1.d0,mInv,nxy,vy-vyp,1,1.d0,veps,1)
-    nis=ddot(nxy,vy-vyp,1,veps,1)
-end subroutine CKF
+    !call dgemv('N',nxy,nxy,1.d0,mInv,nxy,vy-vyp,1,1.d0,veps,1)
+    !nis=ddot(nxy,vy-vyp,1,veps,1)
+    nis=ddot(nxy,vy-vyp,1,vy-vyp,1)
+end subroutine CKFeqs
 
 subroutine CGO(vy,vx,mP,mF,mH,mR,vvar,n)
     use global
@@ -398,15 +405,16 @@ subroutine CGO(vy,vx,mP,mF,mH,mR,vvar,n)
         vvard=vvar
         vvard(i)=vvard(i)*(1.d0+eps)
         call CKF(vy,vx,mP,mF,mH,mR,vvard,nis)
-        vgrad(i)=(nis-nis0)/(eps*vvard(i))
+        vgrad(i)=(nis-nis0)/(eps*vvar(i))
     enddo
     !!!!!!!!!!!!!!!!!!!!
     !Conjugate Gradient!
     !!!!!!!!!!!!!!!!!!!!
+    vgrad0=vgrad
     99 continue
     vd=-vgrad+g*vd
+    vd(1)=0.d0
     vvar=vvar+vd
-
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!
     !Approximate Gradient Again!
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -415,14 +423,19 @@ subroutine CGO(vy,vx,mP,mF,mH,mR,vvar,n)
         vvard=vvar
         vvard(i)=vvard(i)*(1.d0+eps)
         call CKF(vy,vx,mP,mF,mH,mR,vvard,nis)
-        vgrad(i)=(nis-nis0)/(eps*vvard(i))
+        vgrad(i)=(nis-nis0)/(eps*vvar(i))
     enddo
-    ngrad=ddot(n,vgrad,1,vgrad,1)
-    write(*,*)ngrad,nis
+    !ngrad=ddot(n,vgrad,1,vgrad,1)
+    ngrad=vgrad(2)
+    write(*,*)ngrad,nis0
+    write(*,*)vgrad
+    write(*,*)vd
     write(*,*)vvar
+    write(*,*)ngrad,tol
+    write(*,*)
     if(ngrad.gt.tol)then
-        vgrad0=vgrad
         g=ddot(n,vgrad,1,vgrad,1)/ddot(n,vgrad0,1,vgrad0,1)
+        vgrad0=vgrad
         goto 99
     endif
 end subroutine CGO
